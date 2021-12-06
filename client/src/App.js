@@ -6,6 +6,8 @@ import Home from "./components/Home";
 import Contact from "./components/Contact";
 import Write from "./components/Write";
 import About from "./components/About";
+import Userdashboard from "./components/userdashboard/Userdashboard";
+import Viewblog from "./components/Viewblog";
 import { useDispatch, useSelector } from "react-redux";
 import { clearLoginStatus } from "./redux-store/userSlice";
 
@@ -13,6 +15,7 @@ function App() {
   let { isSuccess } = useSelector((state) => state.user);
   let username = localStorage.getItem("username");
   let profileimage = localStorage.getItem("profileimage");
+  let token = localStorage.getItem("token");
   let activeLinkStyle = {
     color: "#F92041",
     fontWeight: "bold",
@@ -28,7 +31,9 @@ function App() {
     <BrowserRouter>
       <nav className="navbar navbar-expand-lg navbar-light bg-light p-2 mb-5 sticky-top">
         <div className="container-fluid ">
-          <h3 className="navbar-brand fs-4">BloggingWorld</h3>
+          <NavLink className="navbar-brand fs-4" to="/home">
+            BloggingWorld
+          </NavLink>
           <button
             className="navbar-toggler"
             type="button"
@@ -45,7 +50,7 @@ function App() {
             id="navbarNav"
           >
             <ul className="navbar-nav">
-              {!isSuccess ? (
+              {!isSuccess && token === null ? (
                 <>
                   <div className="navbar-nav">
                     <li className="nav-item">
@@ -79,51 +84,46 @@ function App() {
                 </>
               ) : (
                 <>
-                  <li className="nav-item">
-                    <div className="dropdown">
-                      <a
-                        class="btn btn-danger dropdown-toggle text-capitalize"
-                        href="#"
-                        role="button"
-                        id="dropdownMenuLink"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                      >
-                        <img
-                          src={profileimage}
-                          className="rounded-pill"
-                          alt="profileimage"
-                          width="25px"
-                        />
-                        {username}
-                      </a>
+                  {token !== null && (
+                    <li className="nav-item">
+                      <div className="dropdown">
+                        <a
+                          class="btn btn-danger dropdown-toggle text-capitalize"
+                          href="#"
+                          role="button"
+                          id="dropdownMenuLink"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                        >
+                          <img
+                            src={profileimage}
+                            className="rounded-pill"
+                            alt="profileimage"
+                            width="25px"
+                          />
+                          {username}
+                        </a>
 
-                      <ul
-                        className="dropdown-menu"
-                        aria-labelledby="dropdownMenuLink"
-                      >
-                        <li className="dropdown-item">
-                          <h6 onClick={onUserLogout} to="/login">
-                            Logout
-                          </h6>
-                        </li>
-                        <li className="dropdown-item">Userdashboard</li>
-                      </ul>
-                    </div>
-                  </li>
+                        <ul
+                          className="dropdown-menu"
+                          aria-labelledby="dropdownMenuLink"
+                        >
+                          <li className="dropdown-item">
+                            <NavLink onClick={onUserLogout} to="/login">
+                              Logout
+                            </NavLink>
+                          </li>
+                          <NavLink
+                            className="dropdown-item"
+                            to="/userdashboard"
+                          >
+                            Userdashboard
+                          </NavLink>
+                        </ul>
+                      </div>
+                    </li>
+                  )}
                 </>
-
-                //    <div class="dropdown">
-                //   <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                //     Dropdown link
-                //   </a>
-
-                //   <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                //     <li><a class="dropdown-item" href="#">Action</a></li>
-                //     <li><a class="dropdown-item" href="#">Another action</a></li>
-                //     <li><a class="dropdown-item" href="#">Something else here</a></li>
-                //   </ul>
-                // </div>
               )}
             </ul>
           </div>
@@ -150,6 +150,12 @@ function App() {
         </Route>
         <Route path="/login">
           <Login />
+        </Route>
+        <Route path="/userdashboard">
+          <Userdashboard />
+        </Route>
+        <Route path="/viewblog/:blogtitle">
+          <Viewblog />
         </Route>
       </Switch>
     </BrowserRouter>

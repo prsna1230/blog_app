@@ -3,6 +3,7 @@ const expressAsyncHandler = require("express-async-handler");
 const userApiObj = express.Router();
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const checkToken = require("./middleware/verifyToken");
 const userdpObj = require("./middleware/adduserImage");
 
 // body parser middleware
@@ -28,10 +29,10 @@ userApiObj.post(
       newUser.profileimage =
         "https://cdn1.vectorstock.com/i/thumb-large/82/55/anonymous-user-circle-icon-vector-18958255.jpg";
     }
-    let user = await userCollection.findOne({ email: newUser.email });
-    console.log("user:", user);
+    let useremail = await userCollection.findOne({ email: newUser.email });
+
     // if user existed send res as "username existed"
-    if (user !== null) {
+    if (useremail !== null) {
       res.send({ message: "email already Existed choose another" });
     } else {
       // has password
@@ -76,7 +77,8 @@ userApiObj.post(
         // create and send token
         let signedToken = await jwt.sign(
           { username: user.username },
-          process.env.SECRET
+          process.env.SECRET,
+          { expiresIn: "1h" }
         );
         // send token as response
         res.send({ message: "Success", token: signedToken, user: user });

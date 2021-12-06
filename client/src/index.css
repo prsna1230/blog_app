@@ -13,3 +13,14 @@ code {
   color: rgb(14, 8, 0);
   font-family: "Merriweather", serif;
 }
+
+.boxshape {
+  /* border: 2px solid black;
+  border-radius: 15px; */
+  cursor: pointer;
+}
+
+.boxshape:hover {
+  background-color: rgba(136, 112, 226, 0.842);
+  transition: 0.3s;
+}

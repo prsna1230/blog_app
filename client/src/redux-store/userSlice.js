@@ -1,12 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import getAxiosWithTokenObj from "../components/Authorizationreq/AxiosReqWithToken";
 
 export const userLogin = createAsyncThunk(
   "loginuser",
   async (userCredentialsObj, thunkApi) => {
     let response = await axios.post("/users/login", userCredentialsObj);
     let data = response.data;
-
     if (data.message === "Success") {
       // save it in localStorage
       localStorage.setItem("token", data.token);
@@ -61,3 +61,14 @@ const userSlice = createSlice({
 export default userSlice.reducer;
 
 export const { clearLoginStatus } = userSlice.actions;
+
+//--------------to store the data as cache--------------------------------;
+//       const addDataIntoCache = (cacheName, url) => {
+//         const data = new Response(JSON.stringify(response.data));
+//         if ("caches" in window) {
+//           caches.open(cacheName).then((cache) => {
+//             cache.put(url, data);
+//           });
+//         }
+//       };
+//       addDataIntoCache();

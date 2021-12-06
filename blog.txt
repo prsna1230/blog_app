@@ -1,0 +1,147 @@
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+import getAxiosWithTokenObj from "../components/Authorizationreq/AxiosReqWithToken";
+
+// add blog
+export const addBlog = createAsyncThunk(
+  "addBlog",
+  async (formData, thunkApi) => {
+    let axiosRequestWithToken = getAxiosWithTokenObj();
+    const data = await axiosRequestWithToken.post("/blog/addblog", formData);
+    if (data.data.message === "New Blog Added") {
+      return data.data.payload;
+    } else {
+      return thunkApi.rejectWithValue(data.data);
+    }
+  }
+);
+
+// get blog
+export const getBlog = createAsyncThunk("getBlog", async (_, thunkApi) => {
+  const data = await axios.get("/blog/getblog");
+  if (data.data.message === "Success") {
+    return data.data.payload;
+  } else {
+    return thunkApi.rejectWithValue(data.data);
+  }
+});
+
+const reducerPending = (state) => {
+  return (state = { ...state, isLoading: true, invalidMessage: "" });
+};
+
+const reducerRejected = (state, action) => {
+  return (state = {
+    ...state,
+    isLoading: false,
+    invalidMessage: action.payload.message,
+  });
+};
+
+const blogSlice = createSlice({
+  name: "blog",
+  initialState: {
+    blogObj: [],
+    isSuccess: false,
+    isLoading: false,
+    invalidMessage: "",
+  },
+  reducers: {},
+  extraReducers: {
+    [getBlog.pending]: (state, action) => {
+      state.isLoading = true;
+    },
+    [getBlog.fulfilled]: (state, action) => {
+      state.blogObj = action.payload;
+      state.isSuccess = true;
+      state.isLoading = false;
+      state.invalidMessage = "";
+    },
+    [getBlog.rejected]: (state, action) => {
+      state.isSuccess = false;
+      state.isError = true;
+      state.isLoading = false;
+      state.invalidLoginMessage = action.payload.message;
+    },
+    // Adding blog
+    [addBlog.pending]: reducerPending,
+    [addBlog.fulfilled]: (state, action) => {
+      state.blogObj.push(action.payload);
+      state.isSuccess = true;
+      state.isLoading = false;
+      state.invalidLoginMessage = "";
+    },
+    [addBlog.rejected]: reducerRejected,
+  },
+});
+
+
+
+export default blogSlice.reducer;
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------------blog api
+
+const express = require("express");
+const blogApiObj = express.Router();
+const expressAsyncHandler = require("express-async-handler");
+const checkToken = require("./middleware/verifyToken");
+const labelimageObj = require("./middleware/addlabelImage");
+// add body parser middleware
+blogApiObj.use(express.json());
+
+// get blogcollection
+let blogCollection;
+blogApiObj.use((req, res, next) => {
+  blogCollection = req.app.get("blogCollection");
+  next();
+});
+
+// add blog
+blogApiObj.post(
+  "/addblog/:email",
+  labelimageObj.single("labelimage"),
+  checkToken,
+  expressAsyncHandler(async (req, res) => {
+    // get blog Obj
+    const blogObj = JSON.parse(req.body.blogObj);
+    blogObj.labelimage = req.file.path;
+    // get email id
+    const emailId = req.params.email;
+    let blog = await blogCollection.findOne({ email: emailId });
+    // if username already present
+    if (blog) {
+      await blogCollection.updateOne(
+        { email: emailId },
+        { $addToSet: { newblog: blogObj } }
+      );
+      res.send({
+        message: "success",
+        payload: { blog: blog, newblog: blogObj },
+      });
+    } else {
+      await blogCollection.insertOne({ email: emailId, newblog: [blogObj] });
+      res.send({ message: "success", payload: { newblog: [blogObj] } });
+    }
+  })
+);
+
+// get blog
+blogApiObj.get("/getblog", async (req, res) => {
+  let blog = await hotelCollection.find().toArray();
+  res.send({ message: "Success", payload: blog });
+});
+
+module.exports = blogApiObj;
+

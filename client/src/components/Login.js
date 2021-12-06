@@ -15,8 +15,7 @@ function Login() {
     formState: { errors },
   } = useForm();
   let [userCredentialsObj, setUserCredentialsObj] = useState({
-    type: "",
-    username: "",
+    email: "",
     password: "",
   });
   // form submit
@@ -28,10 +27,9 @@ function Login() {
   // after login takes to write page
   useEffect(() => {
     if (isSuccess) {
-      history.push("/write");
+      history.push({ pathname: "/write" });
     }
   }, [isSuccess]);
-
   return (
     <div className="container">
       <div className="row mt-5">

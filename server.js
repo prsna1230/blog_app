@@ -8,16 +8,18 @@ const path = require("path");
 // connect bulid of react with express
 app.use(express.static(path.join(__dirname, "./client/build")));
 
+// import APIS Object
+const userApiObj = require("./APIS/userApi");
+const blogApiObj = require("./APIS/blogApi");
+
+// user userAPiObj when path starts with users
+app.use("/users", userApiObj);
+app.use("/blog", blogApiObj);
+
 // Special Route:
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "./client/build", "index.html"));
 });
-
-// import APIS Object
-const userApiObj = require("./APIS/userApi");
-
-// user userAPiObj when path starts with users
-app.use("/users", userApiObj);
 
 // import mongodb module
 const mongoClient = require("mongodb").MongoClient;
@@ -34,9 +36,10 @@ mongoClient.connect(DATABASE_URL, (err, client) => {
     let databaseObject = client.db("bloggingworld");
     // get obj of collection
     let userCollection = databaseObject.collection("usercollection");
-
+    let blogCollection = databaseObject.collection("blogcollection");
     // set to app project
     app.set("userCollection", userCollection);
+    app.set("blogCollection", blogCollection);
 
     console.log("bruh..DB Connection Success..!!");
   }
@@ -44,6 +47,7 @@ mongoClient.connect(DATABASE_URL, (err, client) => {
 
 // error handling middleware
 app.use((err, req, res, next) => {
+  console.log(err);
   res.send({ message: "Error Occured", reason: err.message });
 });
 

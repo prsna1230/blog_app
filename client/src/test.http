@@ -1,0 +1,4 @@
+GET http://localhost:3030/blog/getblog
+
+###
+GET http://localhost:3030/user/getuser

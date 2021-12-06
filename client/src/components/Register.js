@@ -17,9 +17,8 @@ function Register() {
     let formData = new FormData();
 
     // append image to it
-    // if (file !== null) {
+
     formData.append("profileimage", file, file.name);
-    // }
 
     // append user object
     formData.append("userobj", JSON.stringify(userObj));

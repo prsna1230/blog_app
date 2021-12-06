@@ -19,14 +19,14 @@ const clstorage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: async (req, file) => {
     return {
-      folder: "PROFILE_PIC",
+      folder: "LABEL_IMAGES",
       public_key: file.fieldname + "-" + Date.now(),
     };
   },
 });
 
-// comfigure multer
-const userdpObj = multer({ storage: clstorage });
+// configure multer
+const labelimageObj = multer({ storage: clstorage });
 
 // export
-module.exports = userdpObj;
+module.exports = labelimageObj;

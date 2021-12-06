@@ -1,35 +1,34 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
-import { addBlog } from "../redux-store/blogSlice";
 import { useHistory } from "react-router";
+import { editBlogs } from "../redux-store/blogSlice";
 
-function Write() {
+const EditBlog = ({ blogForEdit, index, seted }) => {
   let {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({ defaultValues: blogForEdit });
+  let [file, setFile] = useState(null);
   const dispatch = useDispatch();
   let { userObj } = useSelector((state) => state.user);
-  const history = useHistory();
-  let [file, setFile] = useState(null);
-
-  // label image select
+  // image adding
   const onLabelSelect = (e) => {
     setFile([...e.target.files]);
   };
-  let formData = new FormData();
-  // Submission of blog
+
+  // On Submitting Form
   const onFormSubmit = async (blogObj) => {
     // append image to it
-    file.forEach((element, index) => {
+    file.forEach((element, ind) => {
       let temp = `LabelImg`;
       formData.append(temp, element, element.name);
     });
-    // append username
+    //append hotel ownername
     blogObj.email = userObj.email;
+
+    // appending date
     var today = new Date();
     var date1 =
       today.getFullYear() +
@@ -39,10 +38,16 @@ function Write() {
       today.getDate();
     blogObj.date = date1;
 
-    // append blog object
+    // // append hotel object
     formData.append("blogObj", JSON.stringify(blogObj));
-    dispatch(addBlog(formData));
+
+    dispatch(editBlogs({ bid: blogObj._id, formData: formData, index: index }));
+
+    seted(false);
   };
+
+  // create Formdata Object
+  let formData = new FormData();
 
   return (
     <div className="container-fluid">
@@ -128,11 +133,11 @@ function Write() {
         </div>
         {/* Submit button */}
         <button className="btn btn-danger w-50 d-block mx-auto mb-4 mt-3 rounded-pill">
-          Upload
+          Update
         </button>
       </form>
     </div>
   );
-}
+};
 
-export default Write;
+export default EditBlog;
