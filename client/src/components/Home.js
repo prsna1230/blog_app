@@ -14,7 +14,16 @@ function Home() {
   }, [temp]);
   let [result, setResult] = useState([]);
   let [temp, setTemp] = useState("");
-
+  // Filtering category alone from the blogObj
+  let category = [];
+  blogObj.map((val, index) => {
+    category.push(val.category);
+  });
+  // create unique category list
+  let categories = category.filter((c, index) => {
+    return category.indexOf(c) === index;
+  });
+  console.log(categories);
   // On Category Select
   const categorySelect = (obj) => {
     let result1 = blogObj.filter((bl) => bl.category === obj);
@@ -45,105 +54,72 @@ function Home() {
       <h3 className="text-center mt-3 mb-2">
         <strong>Posts</strong>
       </h3>
-      {result.length !== 0 || temp === "Found" ? (
-        <div>
-          <h3 className="mt-3">Your Search Results..,</h3>
-          <div className="row row-cols-sm-1 row-cols-md-2 row-cols-lg-4 ">
-            {result.map((bl, index) => {
-              return <ListofBlog bl={bl} />;
-            })}
+      <div className="row">
+        <div className="col-lg-8">
+          {result.length !== 0 || temp === "Found" ? (
+            <div>
+              <h3 className="mt-3">Your Search Results..,</h3>
+              <div>
+                {result.map((bl, index) => {
+                  return <ListofBlog bl={bl} />;
+                })}
+              </div>
+            </div>
+          ) : temp === "Not Found" ? (
+            <div>
+              <h2 className="text-center mt-5 mb-5 text-danger">
+                No Result found
+              </h2>
+            </div>
+          ) : (
+            <div>
+              {blogObj.map((bl, index) => {
+                return <ListofBlog bl={bl} />;
+              })}
+            </div>
+          )}
+        </div>
+        <div className="col-lg-4">
+          <div className="bg-warning">
+            <div className="row">
+              <h3>Subscribe For Later Updates</h3>
+              <div className="col-lg-7">
+                <form className="justify-content-center">
+                  <input
+                    type="email"
+                    className="form-control mb-3"
+                    placeholder="Email id"
+                  />
+                  <button
+                    className="btn btn-success mb-3 d-block mx-auto"
+                    type="button"
+                  >
+                    Subscribe
+                  </button>
+                </form>
+              </div>
+            </div>
           </div>
-        </div>
-      ) : temp === "Not Found" ? (
-        <div>
-          <h2 className="text-center mt-5 mb-5 text-danger">No Result found</h2>
-        </div>
-      ) : (
-        <div className="row row-cols-sm-1 row-cols-md-2 row-cols-lg-4 ">
-          {blogObj.map((bl, index) => {
-            return <ListofBlog bl={bl} />;
-          })}
-        </div>
-      )}
+          <h4 className="text-center mt-3 mb-2">
+            <strong>Categories</strong>
+          </h4>
 
-      {/* categories */}
-      <h3 className="text-center mt-3 mb-2">
-        <strong>Categories</strong>
-      </h3>
-      <div className="row row-cols-sm-2 row-cols-md-5 row-cols-lg-8 mb-4">
-        <button
-          className="btn btn-danger boxshape rounded-pill col mt-2"
-          onClick={() => categorySelect("Business")}
-        >
-          Business
-        </button>
-        <button
-          className="btn boxshape btn-success col rounded-pill mt-2"
-          onClick={() => categorySelect("City")}
-        >
-          City
-        </button>
-        <button
-          className="btn boxshape btn-danger col rounded-pill mt-2"
-          onClick={() => categorySelect("DIY")}
-        >
-          DIY
-        </button>
-        <button
-          className="btn boxshape btn-success col rounded-pill mt-2 "
-          onClick={() => categorySelect("Fashion")}
-        >
-          Fashion
-        </button>
-        <button
-          className="btn boxshape btn-danger col rounded-pill mt-2 "
-          onClick={() => categorySelect("Finance")}
-        >
-          Finance
-        </button>
-        <button
-          className="btn boxshape btn-success col rounded-pill mt-2 "
-          onClick={() => categorySelect("Fitness")}
-        >
-          Fitness
-        </button>
-        <button
-          className="btn boxshape btn-danger col rounded-pill mt-2 "
-          onClick={() => categorySelect("Food")}
-        >
-          Food
-        </button>
-        <button
-          className="btn boxshape btn-success col rounded-pill mt-2 "
-          onClick={() => categorySelect("Lifestyle")}
-        >
-          Lifestyle
-        </button>
-        <button
-          className="btn boxshape btn-danger col rounded-pill mt-2"
-          onClick={() => categorySelect("Music")}
-        >
-          Music
-        </button>
-        <button
-          className="btn boxshape btn-success col rounded-pill mt-2"
-          onClick={() => categorySelect("Political")}
-        >
-          Political
-        </button>
-        <button
-          className="boxshape btn-danger col rounded-pill mt-2 me-1"
-          onClick={() => categorySelect("Sports")}
-        >
-          Sports
-        </button>
-        <button
-          className="btn boxshape btn-success col rounded-pill mt-2 "
-          onClick={() => categorySelect("Travel")}
-        >
-          Travel
-        </button>
+          <ul className="list-group">
+            {categories.map((cat, index) => {
+              return (
+                <li
+                  className="list-group-item list-group-item-primary"
+                  type="button"
+                  onClick={() => categorySelect(cat)}
+                >
+                  {cat}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       </div>
+
       <Footer />
     </div>
   );

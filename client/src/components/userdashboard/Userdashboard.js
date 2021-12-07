@@ -76,7 +76,7 @@ const Userdashboard = () => {
           <h3 className="text-center mt-4 mb-2">
             <strong>Your Posts</strong>
           </h3>
-          <div className="row row-cols-sm-1 row-cols-md-2 row-cols-lg-4 mb-4">
+          <div>
             {result.map((bl, index) => {
               return (
                 <div key={index}>

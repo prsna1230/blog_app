@@ -61,7 +61,7 @@ const Viewblog = () => {
       {/* Similiar Posts */}
       <div>
         <h4 className="text-center mt-5 mb-3">Similiar Posts</h4>
-        <div className="row row-cols-sm-1 row-cols-md-2 row-cols-lg-4 ">
+        <div>
           {result.map((bl, index) => {
             return <ListofBlog bl={bl} />;
           })}

@@ -11,25 +11,25 @@ const ListofBlog = ({ bl }) => {
       state: bl,
     });
   };
+  // style={{ maxWidth: "540px" }}
+
   return (
-    <div className="col">
-      <div className="card">
-        <img
-          src={bl.image[0]}
-          className="card-img-top"
-          alt="labelimg"
-          height="200px"
-          width="100%"
-        />
-        <div className="card-body">
-          <h5 className="card-title">{bl.blogtitle}</h5>
-          <p className="card-text">{bl.blog.substring(0, 80)}</p>
+    <div className="card mb-3">
+      <div className="row g-0">
+        <div className="col-md-4">
+          <img
+            src={bl.image[0]}
+            className="img-fluid rounded-start"
+            alt="image"
+          />
         </div>
-        <div className="d-flex justify-content-between">
-          <div>
-            <p>Date: {bl.date}</p>
-          </div>
-          <div>
+        <div className="col-md-8">
+          <div className="card-body">
+            <h5 className="card-title">{bl.blogtitle}</h5>
+            <p className="card-text">{bl.blog.substring(0, 300)}...</p>
+            <p className="card-text">
+              <small className="text-muted">Last updated{bl.date}</small>
+            </p>
             <button
               className="btn btn-primary"
               type="button"
